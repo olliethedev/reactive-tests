@@ -7,10 +7,13 @@ import android.widget.Toast;
 import com.beastpotato.reactivetests.databinding.ActivityMainBinding;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
     ActivityMainBinding mBinding;
+    private Disposable mSubscription;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,7 +24,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         mBinding.homeLoader.show();
-        mApiService.getConfig(BuildConfig.API_KEY)
+        mSubscription = mApiService.getConfig(BuildConfig.API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .cache()
@@ -34,5 +37,9 @@ public class MainActivity extends BaseActivity {
                 });
     }
 
-
+    @Override
+    protected void onPause() {
+        mSubscription.dispose();
+        super.onPause();
+    }
 }
