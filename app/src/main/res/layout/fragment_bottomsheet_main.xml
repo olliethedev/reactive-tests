@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/light_gray">
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorPrimary"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/searchText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/space_medium"
+                android:background="@drawable/search_text_bg"
+                android:drawableLeft="@drawable/ic_search"
+                android:drawablePadding="@dimen/space_small"
+                android:ems="10"
+                android:elevation="@dimen/space_tiny"
+                android:hint="@string/search_hint"
+                android:inputType="text|textPersonName"
+                android:padding="@dimen/space_medium"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
+        </FrameLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

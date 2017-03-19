@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Reactive Tests</string>
+    <string name="search_hint">Enter Movie Name</string>
 </resources>
