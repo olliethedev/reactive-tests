@@ -4,7 +4,9 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.BottomSheetBehavior;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -50,19 +52,64 @@ public class MainActivity extends BaseActivity {
 
             }
         });
+        mBinding.homeBottomNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                mBinding.homeLoader.show();
+                switch (item.getItemId()) {
+                    case R.id.action_popular:
+                        mSubscription = mApiService.getPopular()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(moviesData -> {
+                                    mBinding.homeTextView.setText(moviesData.getResults().toString());
+                                    mBinding.homeLoader.hide();
+                                }, throwable -> {
+                                    Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    mBinding.homeLoader.hide();
+                                });
+                    case R.id.action_now_playing:
+                        mSubscription = mApiService.getCurrent()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(moviesData -> {
+                                    mBinding.homeTextView.setText(moviesData.getResults().toString());
+                                    mBinding.homeLoader.hide();
+                                }, throwable -> {
+                                    Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    mBinding.homeLoader.hide();
+                                });
+
+                    case R.id.action_coming_soon:
+                        mSubscription = mApiService.getUpcoming()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(moviesData -> {
+                                    mBinding.homeTextView.setText(moviesData.getResults().toString());
+                                    mBinding.homeLoader.hide();
+                                }, throwable -> {
+                                    Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                    mBinding.homeLoader.hide();
+                                });
+
+                }
+                return true;
+            }
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mBinding.homeLoader.show();
-        mSubscription = mApiService.getConfig(BuildConfig.API_KEY)
+        mSubscription = mApiService.getConfig()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .cache()
                 .subscribe(configuration -> {
                     mBinding.homeTextView.setText(configuration.toString());
                     mBinding.homeLoader.hide();
+                    mBinding.homeBottomNav.setSelectedItemId(R.id.action_popular);
                 }, throwable -> {
                     Toast.makeText(MainActivity.this, throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     mBinding.homeLoader.hide();
