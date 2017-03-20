@@ -3,6 +3,7 @@ package com.beastpotato.reactivetests.endpoints;
 import com.beastpotato.reactivetests.BuildConfig;
 import com.beastpotato.reactivetests.models.Configuration;
 import com.beastpotato.reactivetests.models.MoviesData;
+import com.beastpotato.reactivetests.models.SearchData;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;
@@ -26,6 +27,6 @@ public interface EndpointInterface {
     Observable<MoviesData> getUpcoming();
 
     @GET("/3/search/movie?api_key=" + BuildConfig.API_KEY)
-    Observable<Object> search(@Query("query") String query);
+    Observable<SearchData> search(@Query("query") String query);
 
 }

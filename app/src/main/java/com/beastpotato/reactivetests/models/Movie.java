@@ -1,11 +1,15 @@
 package com.beastpotato.reactivetests.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Movie {
+public class Movie implements Parcelable {
 
     @SerializedName("overview")
     @Expose
@@ -195,4 +199,58 @@ public class Movie {
                         ",vote_count = '" + voteCount + '\'' +
                         "}";
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.overview);
+        dest.writeString(this.originalLanguage);
+        dest.writeString(this.originalTitle);
+        dest.writeByte(video ? (byte) 1 : (byte) 0);
+        dest.writeString(this.title);
+        dest.writeList(this.genreIds);
+        dest.writeString(this.posterPath);
+        dest.writeString(this.backdropPath);
+        dest.writeString(this.releaseDate);
+        dest.writeDouble(this.popularity);
+        dest.writeDouble(this.voteAverage);
+        dest.writeInt(this.id);
+        dest.writeByte(adult ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.voteCount);
+    }
+
+    public Movie() {
+    }
+
+    protected Movie(Parcel in) {
+        this.overview = in.readString();
+        this.originalLanguage = in.readString();
+        this.originalTitle = in.readString();
+        this.video = in.readByte() != 0;
+        this.title = in.readString();
+        this.genreIds = new ArrayList<Integer>();
+        in.readList(this.genreIds, List.class.getClassLoader());
+        this.posterPath = in.readString();
+        this.backdropPath = in.readString();
+        this.releaseDate = in.readString();
+        this.popularity = in.readDouble();
+        this.voteAverage = in.readDouble();
+        this.id = in.readInt();
+        this.adult = in.readByte() != 0;
+        this.voteCount = in.readInt();
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel source) {
+            return new Movie(source);
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 }

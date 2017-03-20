@@ -1,11 +1,16 @@
 package com.beastpotato.reactivetests.models;
 
+import android.databinding.BaseObservable;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MoviesData {
+public class MoviesData extends BaseObservable implements Parcelable {
 
     @SerializedName("dates")
     @Expose
@@ -78,4 +83,40 @@ public class MoviesData {
                         ",total_results = '" + totalResults + '\'' +
                         "}";
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.dates, flags);
+        dest.writeInt(this.page);
+        dest.writeInt(this.totalPages);
+        dest.writeList(this.results);
+        dest.writeInt(this.totalResults);
+    }
+
+    public MoviesData() {
+    }
+
+    protected MoviesData(Parcel in) {
+        this.dates = in.readParcelable(Dates.class.getClassLoader());
+        this.page = in.readInt();
+        this.totalPages = in.readInt();
+        this.results = new ArrayList<Movie>();
+        in.readList(this.results, List.class.getClassLoader());
+        this.totalResults = in.readInt();
+    }
+
+    public static final Parcelable.Creator<MoviesData> CREATOR = new Parcelable.Creator<MoviesData>() {
+        public MoviesData createFromParcel(Parcel source) {
+            return new MoviesData(source);
+        }
+
+        public MoviesData[] newArray(int size) {
+            return new MoviesData[size];
+        }
+    };
 }
